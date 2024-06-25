@@ -1,10 +1,12 @@
 import { Then, When,Given, Step, AfterAll } from '@badeball/cypress-cucumber-preprocessor'
 import ReservasPageObject from '../../support/pageObjects/ReservasPageObject.cy'
+import TipoHabitacionesPageObject from '../../support/pageObjects/TipoHabitacionesPageObject.cy'
 
 const reservasPageObject = new ReservasPageObject()
+const tipoHabitacionesPageObject = new TipoHabitacionesPageObject()
 
-AfterAll(() => {
-    reservasPageObject.clearDatabase()
+When('pruebas pruebas', () => {
+    tipoHabitacionesPageObject.comprobarCanitidadDisponible()
 })
 
 Given('navego a la web de reservas', () => {
@@ -19,65 +21,65 @@ Then('estoy en la web de reservas', () => {
     reservasPageObject.comprobarPageReserva()
 })
 
-Given('pulso en el botón de nueva reserva', () => {
+Given('pulso en el boton de nueva reserva', () => {
     reservasPageObject.pulsarNuevaReserva()
 })
 
 Then('estoy en la pagina de buscar reserva', () => {
-    reservasPageObject.comprobarPageNuevaReserva()
+    tipoHabitacionesPageObject.comprobarPageNuevaReserva()
 })
 
 When('escribo la cantidad de pasajeros: {int}', (cantidad) => {
-    reservasPageObject.escribirPasajeros(cantidad)
+    tipoHabitacionesPageObject.escribirPasajeros(cantidad)
 })
 
 When('escribo la fecha de entrada: {string}', (fecha_entrada) => {
-    reservasPageObject.escribirFechaEntrada(fecha_entrada)
+    tipoHabitacionesPageObject.escribirFechaEntrada(fecha_entrada)
 })
 
 When('escribo la fecha de salida: {string}', (fecha_salida) => {
-    reservasPageObject.escribirFechaSalida(fecha_salida)
+    tipoHabitacionesPageObject.escribirFechaSalida(fecha_salida)
 })
 
 When('busco la disponibilidad', () => {
-    reservasPageObject.pulsarBuscarDisponibilidad()
+    tipoHabitacionesPageObject.pulsarBuscarDisponibilidad()
 })
 
 Then('me salen todas las habitaciones de hotel disponibles para dicha fecha y dichos pasajeros', () => {
-    reservasPageObject.comprobarBusquedaDisponible()
+    tipoHabitacionesPageObject.comprobarBusquedaDisponible()
 })
 
-Given('selecciono la primera reserva', () => {
-    reservasPageObject.seleccionarReserva()
-    reservasPageObject.recogerPrecio()
+Given('selecciono el tipo de habitacion que quiero: {string}', (capacidad) => {
+    tipoHabitacionesPageObject.seleccionarReserva(capacidad)
+    tipoHabitacionesPageObject.recogerPrecio()
 })
 
 When('relleno los pasajeros', () => {
-    reservasPageObject.rellenarPasajeros()
+    tipoHabitacionesPageObject.rellenarPasajeros()
 })
 
 When('relleno la habitación aleatoria', () => {
-    reservasPageObject.elegirHabitacionesRandom()
+    tipoHabitacionesPageObject.elegirHabitacionesRandom()
 })
 
 When('el usuario rellena la habitación: {string}', (habitacion) => {
-    reservasPageObject.elegirHabitacionUsuario(habitacion)
+    tipoHabitacionesPageObject.elegirHabitacionUsuario(habitacion)
 })
 
 When('relleno el nombre: {string}', (nombre) => {
-    reservasPageObject.rellenarNombre(nombre)
+    tipoHabitacionesPageObject.rellenarNombre(nombre)
 })
 
 When('relleno el correo: {string}', (correo) => {
-    reservasPageObject.rellenarCorreo(correo)
+    tipoHabitacionesPageObject.rellenarCorreo(correo)
 })
 
 When('relleno el número de teléfono: {string}', (telefono) => {
-    reservasPageObject.rellenarTelefono(telefono)
+    tipoHabitacionesPageObject.rellenarTelefono(telefono)
 })
 
 When('pulso el boton de crear reserva', () =>{
-    reservasPageObject.pulsarCrearReserva()
+    tipoHabitacionesPageObject.pulsarCrearReserva()
 })
 
 When('relleno todos los campos de la reserva', () => {
@@ -90,5 +92,5 @@ When('relleno todos los campos de la reserva', () => {
 })
 
 Then('se crea la reserva correctamente', () => {
-    reservasPageObject.comprobarReservaCreada()
+    tipoHabitacionesPageObject.comprobarReservaCreada()
 })
