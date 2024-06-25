@@ -19,9 +19,6 @@ module.exports = defineConfig({
     specPattern: specs,
     chromeWebSecurity: false,
     experimentalRunAllSpecs: true,
-  },
-  component: {
-    experimentalSingleTabRunMode: true
   }
 });
 
