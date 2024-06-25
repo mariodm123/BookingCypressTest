@@ -1,6 +1,7 @@
 import ReservasPageObject from "./ReservasPageObject.cy"
 
 const reservasPageObject = new ReservasPageObject()
+let intentos = 10
 
 class TipoHabitacionesPageObject {
     BTN_RESERVA = '.btn'
@@ -30,6 +31,7 @@ class TipoHabitacionesPageObject {
         return new Date(randomTime).toISOString().split('T')[0]
     }
 
+    //Aqui se define segun los pasajeros (a) y el tipo de habitacion (b) el índice
     customCalculation(a, b) {
         const results = {
             "2,2": 1,
@@ -38,17 +40,17 @@ class TipoHabitacionesPageObject {
             "3,3": 1,
             "3,4": 2,
             "4,4": 1
-        };
+        }
     
         // Formateamos los números para buscar en el objeto results
-        let key = `${Math.min(a, b)},${Math.max(a, b)}`;
+        let key = `${Math.min(a, b)},${Math.max(a, b)}`
         
         // Devolvemos el resultado correspondiente o null si no se encuentra
-        return results[key] || null;
+        return results[key] || null
     }
     
+    //Tipo de habitaciones, simplemente pasa de lo que pide el usuario a numerico
     tipoHabitacion(ordinal) {
-        // Mapeo de ordinales a números
         const ordinalMap = {
             'Individual': 1,
             'Doble': 2,
@@ -89,25 +91,31 @@ class TipoHabitacionesPageObject {
     seleccionarReserva(habitacion){
         const capacidad = this.tipoHabitacion(habitacion)
         const pasajeros = parseInt(this.cantidad_pasajeros)
-        let tipo_habitaciones = 0
+        let index = 0
         //Si buscas por mas cantidad de pasasjeros de los que quieres la habitacion, no entra
         if(capacidad >= this.cantidad_pasajeros){
             if(pasajeros === 1){
-                tipo_habitaciones = capacidad
+                index = capacidad
             }else{
-                tipo_habitaciones = this.customCalculation(pasajeros,capacidad)
+                //Calcula el índice segun los pasajeros que se hayan introducido y el tipo de habitacion del usuario
+                index = this.customCalculation(pasajeros,capacidad)
             }
-
-            cy.get(`tbody > :nth-child(${tipo_habitaciones}) > :nth-child(3)`).then(cantidad_disponible => {
+            
+            //Entramos en la cantidad disponible para verificar si tiene o no
+            cy.get(`tbody > :nth-child(${index}) > :nth-child(3)`).then(cantidad_disponible => {
                 const cantidad = parseInt(cantidad_disponible.text())
                 if(cantidad > 0){
-                    cy.get(`:nth-child(${tipo_habitaciones}) > .text-end > .navbar-brand > .d-inline-block`).should("be.visible").click()
+                    cy.get(`:nth-child(${index}) > .text-end > .navbar-brand > .d-inline-block`).should("be.visible").click()
                 }else{
                     //Si no encuentra ninguna fecha generar una aleatoria para que asi si que hayan habitaciones disponibles
-                    this.escribirFechaEntrada(this.getRandomDate('2021-01-01', '2021-03-31'))
-                    this.escribirFechaSalida(this.getRandomDate('2021-04-01', '2021-07-31'))
+                    intentos--
+                    this.escribirFechaEntrada(this.getRandomDate('2001-01-01', '2001-06-31'))
+                    this.escribirFechaSalida(this.getRandomDate('2001-07-01', '2001-12-31'))
+                    //Le damos 10 intentos para buscar una fecha que tenga disponibilidad
                     this.pulsarBuscarDisponibilidad()
-                    cy.get(`:nth-child(${tipo_habitaciones}) > .text-end > .navbar-brand > .d-inline-block`).should("be.visible").click()
+                    if(intentos > 0){
+                        this.seleccionarReserva(habitacion)
+                    }
                 }
             })
         }  
@@ -148,8 +156,7 @@ class TipoHabitacionesPageObject {
         cy.get(this.PRECIO)
         .invoke('val')
         .then((value) => {
-            // Aquí value tendrá el valor del input, por ejemplo, "240,00"
-            // Si quieres convertirlo a número, puedes hacer lo siguiente:
+            //Para convertirlo a numerico
             const price = parseFloat(value.replace(',', '.'))
             this.precio_text = price
         })
