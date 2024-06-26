@@ -5,10 +5,6 @@ import TipoHabitacionesPageObject from '../../support/pageObjects/TipoHabitacion
 const reservasPageObject = new ReservasPageObject()
 const tipoHabitacionesPageObject = new TipoHabitacionesPageObject()
 
-When('pruebas pruebas', () => {
-    tipoHabitacionesPageObject.comprobarCanitidadDisponible()
-})
-
 Given('navego a la web de reservas', () => {
     reservasPageObject.navegarPage()
 })
